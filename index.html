@@ -281,7 +281,13 @@
                     .attr("transform", 
                           "translate(" + margin.left + "," + margin.top + ")");
                 
-                var tooltip = d3.select("#barSatisfaction").append("div").attr("class", "toolTip");
+                var tooltip = d3.select("#barHappiness").append("div").attr("class", "tooltip");
+                
+                tooltip.append('div')
+                .attr('class', 'label');
+
+                tooltip.append('div')
+                .attr('class', 'count');
 
                 var noCountry = [];
                 //Sorting out the data to only display the country selected
@@ -342,14 +348,17 @@
                       .attr("width", x.bandwidth())
                       .attr("y", function(d) { return y(d.count); })
                       .attr("height", function(d) { return height - y(d.count); })
-                        .on("mousemove", function(d){
-                        tooltip
-                          .style("left", d3.event.pageX + 10 + "px")
-                          .style("top", d3.event.pageY - 70 + "px")
-                          .style("display", "inline-block")
-                          .html((d.count + '%'));
-                    })
-                      .on("mouseout", function(d){ tooltip.style("display", "none");});
+                      .on("mouseover", function(d){
+                        tooltip.select('.count').html(d.count + '%');
+                        tooltip.style('display', 'block');
+                        tooltip.style('opacity',2);
+                        })
+                      .on("mouseout", function(d){ 
+                      tooltip.style("display", "none");})
+                      .on('mousemove', function(d) {                            // NEW
+                      tooltip.style('top', (d3.event.pageY - 150) + 'px')          // NEW
+                      .style('left', (d3.event.pageX - 720) + 'px');             // NEW
+                  });
 
                   // add the x Axis
                   svg.append("g")
@@ -409,7 +418,14 @@
                     .append("g")
                     .attr("transform", 
                           "translate(" + margin.left + "," + margin.top + ")");
-                var tooltip = d3.select("#barSatisfaction").append("div").attr("class", "toolTip");
+                
+                var tooltip = d3.select("#barSatisfaction").append("div").attr("class", "tooltip");
+                
+                tooltip.append('div')
+                .attr('class', 'label');
+
+                tooltip.append('div')
+                .attr('class', 'count');
 
                 //Sorting out the data to only display the country selected
                 var noCountry = [];
@@ -473,7 +489,8 @@
                   // Scale the range of the data in the domains
                   x.domain(dataset.map(function(d) { return d.label; }));
                   y.domain([0, 100]);
-
+ 
+                    
                   // append the rectangles for the bar chart
                   svg.selectAll(".bar")
                       .data(dataset)
@@ -483,15 +500,19 @@
                       .attr("width", x.bandwidth())
                       .attr("y", function(d) { return y(d.count); })
                       .attr("height", function(d) { return height - y(d.count); })
-                      .on("mousemove", function(d){
-                        tooltip
-                          .style("left", d3.event.pageX - 50 + "px")
-                          .style("top", d3.event.pageY - 70 + "px")
-                          .style("display", "inline-block")
-                          .html((d.count + '%'));
-                    })
-                      .on("mouseout", function(d){ tooltip.style("display", "none");});
+                      .on("mouseover", function(d){
+                        tooltip.select('.count').html(d.count + '%');
+                        tooltip.style('display', 'block');
+                        tooltip.style('opacity',2);
+                        })
+                      .on("mouseout", function(d){ 
+                      tooltip.style("display", "none");})
+                      .on('mousemove', function(d) {                            // NEW
+                      tooltip.style('top', (d3.event.pageY - 460) + 'px')          // NEW
+                      .style('left', (d3.event.pageX - 720) + 'px');             // NEW
+                  });
 
+                    
                   // add the x Axis
                   svg.append("g")
                       .attr("transform", "translate(0," + height + ")")
@@ -627,8 +648,8 @@
                   });                                                           // NEW
  
                 path.on('mousemove', function(d) {                            // NEW
-                    tooltip.style('top', (d3.event.pageY -95) + 'px')          // NEW
-                      .style('left', (d3.event.pageX + 15) + 'px');             // NEW
+                    tooltip.style('top', (d3.event.pageY -150) + 'px')          // NEW
+                      .style('left', (d3.event.pageX + 50) + 'px');             // NEW
                   });                         
 
                 
@@ -785,8 +806,8 @@
                   });                                                           // NEW
  
                 path.on('mousemove', function(d) {                            // NEW
-                    tooltip.style('top', (d3.event.pageY -95) + 'px')          // NEW
-                      .style('left', (d3.event.pageX + 15) + 'px');             // NEW
+                    tooltip.style('top', (d3.event.pageY -150) + 'px')          // NEW
+                      .style('left', (d3.event.pageX + 50) + 'px');             // NEW
                   }); 
 
                 svg.append('text')
@@ -937,8 +958,8 @@
                   });                                                           // NEW
  
                 path.on('mousemove', function(d) {                            // NEW
-                    tooltip.style('top', (d3.event.pageY -95) + 'px')          // NEW
-                      .style('left', (d3.event.pageX + 15) + 'px');             // NEW
+                    tooltip.style('top', (d3.event.pageY -150) + 'px')          // NEW
+                      .style('left', (d3.event.pageX + 50) + 'px');             // NEW
                   }); 
 
                 svg.append('text')
@@ -1093,8 +1114,8 @@
                   });                                                           // NEW
  
                 path.on('mousemove', function(d) {                            // NEW
-                    tooltip.style('top', (d3.event.pageY -95) + 'px')          // NEW
-                      .style('left', (d3.event.pageX + 15) + 'px');             // NEW
+                    tooltip.style('top', (d3.event.pageY - 150) + 'px')          // NEW
+                      .style('left', (d3.event.pageX + 50) + 'px');             // NEW
                   }); 
 
                 svg.append('text')
@@ -1248,8 +1269,8 @@ var noCountry = [];
                   });                                                           // NEW
  
                 path.on('mousemove', function(d) {                            // NEW
-                    tooltip.style('top', (d3.event.pageY -95) + 'px')          // NEW
-                      .style('left', (d3.event.pageX + 15) + 'px');             // NEW
+                    tooltip.style('top', (d3.event.pageY - 150) + 'px')          // NEW
+                      .style('left', (d3.event.pageX + 50) + 'px');             // NEW
                   }); 
 
                 svg.append('text')
@@ -1403,8 +1424,8 @@ var noCountry = [];
                   });                                                           // NEW
  
                 path.on('mousemove', function(d) {                            // NEW
-                    tooltip.style('top', (d3.event.pageY -95) + 'px')          // NEW
-                      .style('left', (d3.event.pageX + 15) + 'px');             // NEW
+                    tooltip.style('top', (d3.event.pageY - 150) + 'px')          // NEW
+                      .style('left', (d3.event.pageX + 50) + 'px');             // NEW
                   }); 
 
                 svg.append('text')
