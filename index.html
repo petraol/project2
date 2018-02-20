@@ -47,7 +47,7 @@
           pointer-events: all;
         }
         #countries, #states {
-          fill: pink;
+          fill: grey;
           stroke: #fff;
           stroke-linejoin: round;
           stroke-linecap: round;
@@ -67,6 +67,9 @@
           margin-bottom: 0;
           padding: 9.5px;
         }
+        li {
+            /*display: inline;*/
+        }
                     
     </style>
     <script src="https://d3js.org/d3.v4.min.js"></script>
@@ -84,18 +87,31 @@
 
     
 <body>
+    <div id="header" style="display:block"><h1 style="text-align: center">How happy are you?</h1></div>
     <div class ="col-sm-12" style="text-align: middle">
-        <p>Select wave: </p>
+        <p style="display: inline">Select wave: </p>
         <button type="button" class="btn btn-primary" onclick="changeWave('1995-1999')">1995-1999</button>
         <button type="button" class="btn btn-primary" onclick="changeWave('2000-2004')">2000-2004</button>
         <button type="button" class="btn btn-primary" onclick="changeWave('2005-2009')">2005-2009</button>
         <button type="button" class="btn btn-primary" onclick="changeWave('2010-2014')">2010-2014</button>
+        <div id="backButton" style="display: none"><button type="button" class="btn btn-danger" onclick="gotoMap()">Go to map</button></div>
     </div>
-    <div id="map" style="visibility: visible"></div>
+    <div class ="col-sm-12" id="year" style="display: block"></div>
+    <div id="squares" style="display: block" class="col-sm-2">
+        <h4>Countries happiness based on percentage</h4>
+        <ul type="square">
+        <li style="color: #800040">Very Happy</li>
+        <li style="color: #e60073">Quite happy</li>
+        <li style="color: #ff4da6">Not very happy </li>
+        <li style="color: #ffb3d9">Not at all happy</li>
+        <li style="color: #ffe6e6">Other</li>
+        <li style="color: grey">Data not available</li>
+        </ul>
+    </div>
+    <div id="map" class="col-sm-10"></div>
     <div id="charts" style="visibility: hidden">
         <div class="row">
             <div class ="col-sm-12" id="title"></div>
-            <div id="backButton"></div>
         </div>
         <div class="row">
                 <div class="col-sm-6" id="donut-charts">
@@ -159,6 +175,47 @@
         ["Argentina", "Australia", "Chile", "China", "Taiwan", "Colombia", "Georgia", "India", "Japan", "South Korea", "Mexico", "New Zealand", "Nigeria", "Pakistan", "Peru", "Philippines", "Poland", "Romania", "Russia", "Slovenia", "South Africa", "Spain", "Sweden",	"Turkey", "Ukraine", "Egypt", "United States", "Uruguay"]
         ];    
         
+    var countryHappiness = [
+        [{country:"Argentina", happy: "Quite happy"}, {country:"Australia", happy: "Quite happy"}, {country: "Chile", happy: "Quite happy"}, {country: "China", happy: "Quite happy"}, {country: "Taiwan", happy: "Quite happy"}, {country:"Colombia", happy: "Very happy"}, {country:"Georgia", happy: "Quite happy"}, {country:"India", happy: "Quite happy"}, {country:"Japan", happy: "Quite happy"}, {country:"South Korea", happy: "Quite happy"}, {country:"Mexico", happy: "Quite happy"}, {country:"Moldova", happy: "Not very happy"}, {country:"New Zealand", happy: "Quite happy"}, {country:"Nigeria", happy: "Very happy"}, {country:"Pakistan", happy: "Quite happy"}, {country:"Peru", happy: "Not very happy"}, {country:"Philippines", happy: "Quite happy"}, {country:"Poland", happy: "Quite happy"}, {country:"Romania", happy: "Quite happy"}, {country:"Russia", happy: "Quite happy"}, {country:"Slovenia", happy: "Quite happy"}, {country:"South Africa", happy: "Quite happy"}, {country:"Spain", happy: "Quite happy"}, {country:"Sweden", happy: "Quite happy"}, {country:"Turkey", happy: "Very happy"}, {country:"Ukraine", happy: "Quite happy/Not very happy"}, {country:"United States", happy: "Quite happy"}, {country:"Uruguay", happy: "Quite happy"}, {country:"Serbia", happy: "Quite happy"}],
+        
+        [{country:"Argentina", happy: "Quite happy"}, {country: "Chile", happy: "Quite happy"}, {country: "China", happy: "Quite happy"},{country:"India", happy: "Quite happy"}, {country:"Japan", happy: "Quite happy"}, {country:"South Korea", happy: "Quite happy"}, {country:"Mexico", happy: "Very happy"}, {country:"Moldova", happy: "Not very happy"}, {country:"Nigeria", happy: "Very happy"}, {country:"Pakistan", happy: "Quite happy"}, {country:"Peru", happy: "Quite happy"}, {country:"Philippines", happy: "Quite happy"}, {country:"South Africa", happy: "Quite happy"}, {country:"Spain", happy: "Quite happy"}, {country:"Sweden", happy: "Quite happy"}, {country:"Turkey", happy: "Quite happy"}, {country: "Egypt", happy: "Quite happy"}, {country:"United States", happy: "Quite happy"}, {country:"Serbia", happy: "Quite happy"}],
+        
+        [{country:"Argentina", happy: "Quite happy"}, {country:"Australia", happy: "Quite happy"}, {country: "Chile", happy: "Quite happy"}, {country: "China", happy: "Quite happy"}, {country: "Taiwan", happy: "Quite happy"}, {country:"Colombia", happy: "Very happy"}, {country:"Georgia", happy: "Quite happy"}, {country:"India", happy: "Quite happy"}, {country:"Japan", happy: "Quite happy"}, {country:"South Korea", happy: "Quite happy"}, {country:"Mexico", happy: "Very happy"}, {country:"Moldova", happy: "Quite happy"}, {country:"New Zealand", happy: "Quite happy"}, {country:"Peru", happy: "Quite happy"}, {country:"Poland", happy: "Quite happy"}, {country:"Romania", happy: "Quite happy"}, {country:"Russia", happy: "Quite happy"}, {country:"Slovenia", happy: "Quite happy"}, {country:"South Africa", happy: "Very happy"}, {country:"Spain", happy: "Quite happy"}, {country:"Sweden", happy: "Quite happy"}, {country:"Turkey", happy:"Quite happy"}, {country:"Ukraine", happy: "Quite happy"}, {country: "Egypt", happy:"Quite happy" }, {country:"United States", happy: "Quite happy"}, {country:"Uruguay", happy: "Quite happy"}, {country:"Serbia", happy: "Quite happy"}],
+        
+        [{country:"Argentina", happy: "Quite happy"}, {country:"Australia", happy: "Quite happy"}, {country: "Chile", happy: "Quite happy"}, {country: "China", happy: "Quite happy"}, {country: "Taiwan", happy: "Quite happy"}, {country:"Colombia", happy: "Very happy"}, {country:"Georgia", happy: "Quite happy"}, {country:"India", happy: "Quite happy"}, {country:"Japan", happy: "Quite happy"}, {country:"South Korea", happy: "Quite happy"}, {country:"Mexico", happy: "Very happy"}, {country:"New Zealand", happy: "Quite happy"}, {country:"Pakistan", happy: "Very happy"}, {country:"Peru", happy: "Quite happy"}, {country:"Philippines", happy: "Very happy"}, {country:"Poland", happy: "Quite happy"}, {country:"Romania", happy: "Quite happy"}, {country:"Russia", happy: "Quite happy"}, {country:"Slovenia", happy: "Quite happy"}, {country:"South Africa", happy: "Very happy"}, {country:"Spain", happy: "Quite happy"}, {country:"Sweden", happy: "Quite happy"}, {country:"Turkey", happy: "Quite happy"}, {country:"Ukraine", happy: "Quite happy"},  {country:"Egypt", happy: "Not at all happy"},{country:"United States", happy: "Quite happy"}, {country:"Uruguay", happy: "Quite happy"}]
+        ];     
+        
+        function colorMe(wave, country) {
+            var color = "";
+            var happiness = "";
+            temporary_countryHappiness = countryHappiness[wave];
+            for (i=0; i<temporary_countryHappiness.length; i++) {
+                if (temporary_countryHappiness[i].country == country) {
+                    happiness = temporary_countryHappiness[i].happy;
+                }
+            }
+            if (happiness == "Very happy") {
+                color = "#800040";
+                return color;
+            }
+            else if (happiness == "Quite happy") {
+                color = "#e60073";
+                return color;
+            }
+            else if (happiness == "Not very happy") {
+                color = "#ff4da6";
+                return color;
+            }
+            else if (happiness == "Not at all happy") {
+                color = " #ffb3d9";
+                return color;
+            }
+            else {
+                color ="#ffe6e6";
+                return color;
+            }
+        }
+        
         d3.json("countries.topo.json", function(error, us) {
                 g.append("g")
                     .attr("id", "countries")
@@ -168,21 +225,21 @@
                     .append("path")
                     .attr("id", function(d) { return d.id; })
                     .attr("style", function(d){ 
-                        if (selected_wave == "1995-1999" && countryData[0].includes(d.properties.name) == false) {
-                            console.log("fill grey wave 1")
-                            return "fill: grey";
+                        if (selected_wave == "1995-1999" && countryData[0].includes(d.properties.name) == true) {
+                            var color = colorMe(0, d.properties.name);
+                            return "fill: " + color;
                         }
-                        if(selected_wave == "2000-2004" &&countryData[1].includes(d.properties.name) == false){
-                            console.log("fill grey wave 2")
-                            return "fill: grey";
+                        if(selected_wave == "2000-2004" &&countryData[1].includes(d.properties.name) == true){
+                            var color = colorMe(0, d.properties.name);
+                            return "fill: " + color;
                         }
-                        if(selected_wave == "2005-2009" &&countryData[2].includes(d.properties.name) == false){
-                            console.log("fill grey wave 3")
-                            return "fill: grey";
+                        if(selected_wave == "2005-2009" &&countryData[2].includes(d.properties.name) == true){
+                            var color = colorMe(0, d.properties.name);
+                            return "fill: " + color;
                         }
-                        if(selected_wave == "2010-2014" &&countryData[3].includes(d.properties.name) == false){
-                            console.log("fill grey wave 4")
-                            return "fill: grey";
+                        if(selected_wave == "2010-2014" &&countryData[3].includes(d.properties.name) == true){
+                            var color = colorMe(0, d.properties.name);
+                            return "fill: " + color;;
                         }
                     })
             .attr("d", path)
@@ -198,8 +255,11 @@
             selected_country = d.properties.name
             updateData();
             document.getElementById("charts").style = 'visible';
-            document.getElementById("backButton").innerHTML = '<button type="button" class="btn btn-danger" onclick="gotoMap()">Go to map</button>';
+            document.getElementById("backButton").style = "display: block";
             d3.select(".takemeaway").remove();
+            document.getElementById("squares").style = "display: none";
+            document.getElementById("header").style = "display: none";
+            document.getElementById("year").style = "display: none";
         }
 
         function changeWave(wave) {
@@ -210,6 +270,7 @@
             if (status == "1") {
                 console.log("jag uppdaterar kartan")
                 updateMap();
+                updateData();
             }
             else {
                 updateData();
@@ -220,17 +281,27 @@
             console.log("gotomap")
             status = "1";
             updateMap();
+            document.getElementById("backButton").style = "display: none";
+            document.getElementById("squares").style = "display: block";
+            document.getElementById("header").style = "display: block";
+            document.getElementById("year").style = "display: block";
             d3.select("#charts").attr("style", "visibility: hidden");
         }
         
         var element = document.getElementById("title");
             element.innerHTML = selected_country + " " + selected_wave;
         
+        var element2 = document.getElementById("year");
+            element2.innerHTML = "<h3 style='text-align:center'>The world " + selected_wave + "</h3>";
+        
         
         function updateData() {    
             
             var element = document.getElementById("title");
             element.innerHTML = selected_country + " " + selected_wave;
+            
+            var element2 = document.getElementById("year");
+            element2.innerHTML = "<h3 style='text-align:center'>The world " + selected_wave + "</h3>";
             
             document.getElementById("chartFamily").innerHTML = "";
             document.getElementById("chartFriends").innerHTML = "";
